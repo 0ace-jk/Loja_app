@@ -268,7 +268,7 @@ else:
             b, col_copia, c = st.columns([1, 8, 1])
             with col_copia:
                 st.write('**PIX Copia e Cola:**')
-                st.code(string_pix, language='text')
+                st.text_area(string_pix)
 
                 # Reseta a sessão para não travar o celular do usuário se ele quiser fazer outro pedido depois
                 # st.session_state.etapa = 1
