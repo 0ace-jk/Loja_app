@@ -268,7 +268,7 @@ else:
             b, col_copia, c = st.columns([1, 8, 1])
             with col_copia:
                 st.write('**PIX Copia e Cola:**')
-                st.code(string_pix, language='text')
+                # st.code(string_pix, language='text')
                 # --- INÍCIO DO BLOCO DE CÓPIA OTIMIZADO ---
                 html_pix = f"""
                 <div style="
