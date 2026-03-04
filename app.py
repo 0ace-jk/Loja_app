@@ -268,8 +268,31 @@ else:
             b, col_copia, c = st.columns([1, 8, 1])
             with col_copia:
                 st.write('**PIX Copia e Cola:**')
-                st.text_area(string_pix)
-
+                st.code(string_pix, language='text')
+                # --- INÍCIO DO BLOCO DE CÓPIA OTIMIZADO ---
+                html_pix = f"""
+                <div style="
+                    background-color: #1e1e1e;
+                    color: #4CAF50;
+                    padding: 15px;
+                    border-radius: 8px;
+                    border: 1px solid #4CAF50;
+                    text-align: center;
+                    font-family: monospace;
+                    font-size: 14px;
+                    word-break: break-all;
+                    user-select: all; 
+                    -webkit-user-select: all; 
+                    cursor: pointer;
+                ">
+                    {string_pix}
+                </div>
+                <p style="text-align: center; font-size: 14px; margin-top: 5px;">
+                    👆 <b>Dê apenas um toque no texto verde acima</b> para selecionar tudo e copiar.
+                </p>
+                """
+                st.markdown(html_pix, unsafe_allow_html=True)
+                # --- FIM DO BLOCO ---
                 # Reseta a sessão para não travar o celular do usuário se ele quiser fazer outro pedido depois
                 # st.session_state.etapa = 1
                 # st.session_state.carrinho = {}
