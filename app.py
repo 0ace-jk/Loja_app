@@ -4,6 +4,7 @@ import qrcode
 from datetime import datetime
 from pix_utils_ace import Code
 from streamlit_gsheets import GSheetsConnection
+import plotly.express as px
 
 # ==========================================
 # 1. PARÂMETROS DE NEGÓCIO
@@ -164,13 +165,20 @@ with st.sidebar:
 if st.session_state.admin_logado:
     st.title("📋 Relatório da Operação")
     st.info("Para confirmar os pagamentos, abra a planilha no seu Google Sheets e altere a coluna 'Status PIX'.")
+    st.markdown('link da planilha: [Pedidos - Google Sheets](https://docs.google.com/spreadsheets/d/1fM9B6zqH-TgPgAm_e8JwVDaI6mk9dHGbdcv8ZOSHN1E/edit?)')
     try:
         df_pedidos = conn.read(worksheet="Pedidos", ttl=0)
         st.metric("Total Vendido", f"R$ {df_pedidos['Valor Total'].sum():.2f}")
         st.dataframe(df_pedidos, use_container_width=True)
+
     except Exception as e:
         st.warning("A planilha 'Pedidos' ainda está vazia ou inacessível.")
-        
+
+    st.dataframe(df_pedidos.iloc[:, 3:-2].sum().reset_index())
+    st.markdown("### Gráfico de Vendas por Produto")
+    st.write(px.bar(df_pedidos.iloc[:, 3:-2].sum().sort_values(ascending=False).reset_index(),
+                    x='index', y=0, labels={'index': 'SKU', '0': 'Quantidade Vendida'}, title='Vendas por SKU'))
+
 # VISÃO DO CLIENTE
 else:
     if st.session_state.etapa == 1:
