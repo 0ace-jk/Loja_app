@@ -42,14 +42,33 @@ def calcular_valor_total(carrinho):
     Motor financeiro: Lê o SKU e aplica o preço correto consultando a TABELA_PRECOS.
     """
     total = 0.0
+    itens_carrinho = sum(carrinho.values())
+    st.write(itens_carrinho)
     for sku, qtd in carrinho.items():
-        if qtd > 0:
+        if itens_carrinho == 1:
             if 'Infantil' in sku:
                 total += (qtd * TABELA_PRECOS['Infantil'])
             elif any(tam in sku for tam in GRADE_ESPECIAL):
                 total += (qtd * TABELA_PRECOS['Especial'])
             else:
                 total += (qtd * TABELA_PRECOS['Padrao'])
+
+        if itens_carrinho == 2:  # Desconto progressivo para 2 ou mais peças do mesmo SKU
+            if 'Infantil' in sku:
+                total += (qtd * (TABELA_PRECOS['Infantil'] - 5))
+            elif any(tam in sku for tam in GRADE_ESPECIAL):
+                total += (qtd * (TABELA_PRECOS['Especial']))
+            else:
+                total += (qtd * (TABELA_PRECOS['Padrao'] - 5))
+
+        if itens_carrinho >= 3: # Desconto progressivo para 3 ou mais peças do mesmo SKU
+            if 'Infantil' in sku:
+                total += (qtd * (TABELA_PRECOS['Infantil'] - 10))
+            elif any(tam in sku for tam in GRADE_ESPECIAL):
+                total += (qtd * (TABELA_PRECOS['Especial']))
+            else:
+                total += (qtd * (TABELA_PRECOS['Padrao'] - 10))
+
     return total
 
 
@@ -156,7 +175,8 @@ if st.session_state.admin_logado:
 else:
     if st.session_state.etapa == 1:
         st.title('🛒 Lojinha do Norte')
-        st.info('Selecione as quantidades desejadas. Os valores totais serão calculados na próxima etapa.')
+        st.info('Selecione as quantidades desejadas. Os valores totais serão calculados na próxima etapa.\n \nNa compra de 2 peças o desconto é de R\$5,00 por peça.\n \nNa compra de 3 ou mais peças o desconto é de R\$10,00 por peça!')
+        st.image("assets/camiseta.jpg", caption="Lojinha do Norte - Camisetas de Qualidade")
 
         with st.form('form_loja'):
             escolhas_temporarias = {}
@@ -202,6 +222,7 @@ else:
             st.subheader("Seus Dados")
             nome = st.text_input("Nome Completo")
             tel = st.text_input("WhatsApp (com DDD)")
+            tel = tel.replace(" ", "").replace("-", "")  # Limpeza básica do número
             
             if st.form_submit_button("Avançar para Pagamento", type="primary"):
                 # Filtra apenas os SKUs que tiveram pelo menos 1 unidade selecionada
@@ -268,8 +289,28 @@ else:
             b, col_copia, c = st.columns([1, 8, 1])
             with col_copia:
                 st.write('**PIX Copia e Cola:**')
-                st.code(string_pix, language='text')
-
+                html_pix = f"""
+                <div style="
+                    background-color: #1e1e1e;
+                    color: #4CAF50;
+                    padding: 15px;
+                    border-radius: 8px;
+                    border: 1px solid #4CAF50;
+                    text-align: center;
+                    font-family: monospace;
+                    font-size: 14px;
+                    word-break: break-all;
+                    user-select: all; 
+                    -webkit-user-select: all; 
+                    cursor: pointer;
+                ">
+                    {string_pix}
+                </div>
+                <p style="text-align: center; font-size: 14px; margin-top: 5px;">
+                    👆 <b>Dê apenas um toque no texto verde acima</b> para selecionar tudo e copiar.
+                </p>
+                """
+                st.markdown(html_pix, unsafe_allow_html=True)
                 # Reseta a sessão para não travar o celular do usuário se ele quiser fazer outro pedido depois
                 # st.session_state.etapa = 1
                 # st.session_state.carrinho = {}
