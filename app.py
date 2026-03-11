@@ -175,7 +175,12 @@ if st.session_state.admin_logado:
 else:
     if st.session_state.etapa == 1:
         st.title('🛒 Lojinha do Norte')
-        st.info('Selecione as quantidades desejadas. Os valores totais serão calculados na próxima etapa.\n \nNa compra de 2 peças o desconto é de R\$5,00 por peça.\n \nNa compra de 3 ou mais peças o desconto é de R\$10,00 por peça!')
+        st.info('''
+                Selecione as quantidades desejadas. Os valores totais serão calculados na próxima etapa.
+                \nNa compra de 2 peças o desconto é de R\$5,00 por peça.
+                \nNa compra de 3 ou mais peças o desconto é de R\$10,00 por peça!
+                \n- Para camisetas especiais (G1 e G3) o preço mantem o mesmo!
+                ''')
         st.image("assets/camiseta.jpg", caption="Lojinha do Norte - Camisetas de Qualidade")
 
         with st.form('form_loja'):
